@@ -5,7 +5,7 @@
    <p>The Swiss Army Knife<br/>for the SIGHUP Distribution</p>
 
    [![Build Status](https://ci.sighup.io/api/badges/sighupio/furyctl/status.svg?ref=refs/heads/main)](https://ci.sighup.io/sighupio/furyctl)
-   ![Release](https://img.shields.io/badge/furyctl-v0.33.2-blue)
+   ![Release](https://img.shields.io/badge/furyctl-v0.34.0-blue)
    ![Slack](https://img.shields.io/badge/slack-@kubernetes/fury-yellow.svg?logo=slack)
    ![License](https://img.shields.io/github/license/sighupio/furyctl)
    [![Go Report Card](https://goreportcard.com/badge/github.com/sighupio/furyctl)](https://goreportcard.com/report/github.com/sighupio/furyctl)
@@ -36,7 +36,22 @@
 
 ## Support & Compatibility 🪢
 
-Check the [compatibility matrix][compatibility-matrix] for information about `furyctl` and `SD` versions compatibility.
+### Latest Release: Kubernetes 1.35 Support 🚀
+
+**furyctl v0.34.0** now includes full support for Kubernetes 1.35.x (versions 1.35.0 through 1.35.5) across all cluster types:
+
+- ✅ OnPremises clusters (with cgroup v2 and containerd 2.0+ support)
+- ✅ EKS clusters (AWS-managed)
+- ✅ KFDDistribution (on existing Kubernetes 1.35 clusters)
+
+**New Documentation for Kubernetes 1.35:**
+- [Compatibility Matrix](docs/COMPATIBILITY-MATRIX.md) - Complete support matrix and version requirements
+- [Upgrade Guide](docs/K8S-1.35-UPGRADE-GUIDE.md) - Step-by-step upgrade procedures for all cluster types
+- [Breaking Changes](docs/K8S-1.35-BREAKING-CHANGES.md) - Critical changes and migration instructions
+- [Testing Guide](docs/K8S-1.35-TESTING.md) - Comprehensive testing procedures
+- [Release Notes](docs/releases/v0.34.0.md) - v0.34.0 release information
+
+For additional information, check the [compatibility matrix][compatibility-matrix] for `furyctl` and SIGHUP Distribution versions compatibility.
 
 ## Installation
 
@@ -57,7 +72,7 @@ Alternatively, you can install `furyctl` using `mise` or the `asdf` plugin.
 ### Installing with [mise](https://mise.jdx.dev/)
 
 ```bash
-mise use furyctl@0.33.2
+mise use furyctl@0.34.0
 ```
 
 Check that everything is working correctly with `furyctl version`:
@@ -67,7 +82,7 @@ $ furyctl version
 ...
 goVersion: go1.23
 osArch: arm64
-version: 0.33.2
+version: 0.34.0
 ```
 
 ### Installing with [asdf](https://github.com/asdf-vm/asdf)
@@ -85,7 +100,7 @@ $ furyctl version
 ...
 goVersion: go1.23
 osArch: amd64
-version: 0.33.2
+version: 0.34.0
 ```
 
 ## Development
