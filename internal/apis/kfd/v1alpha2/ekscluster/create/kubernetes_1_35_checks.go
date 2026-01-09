@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+
+	distrib "github.com/sighupio/furyctl/internal/distribution"
 )
 
 // Kubernetes135ChecksError represents a collection of errors from 1.35 specific checks
@@ -178,5 +180,12 @@ func (p *PreFlight) checkNodeOSCompatibility() error {
 	}
 
 	logrus.Debug("node OS versions are compatible - OK")
+	return nil
+}
+
+// CheckModuleBreakingChanges validates module versions for Kubernetes 1.35 breaking changes
+// Note: For EKS, module versions are less critical since AWS manages the infrastructure
+func (p *PreFlight) CheckModuleBreakingChanges() error {
+	logrus.Debug("Skipping module breaking changes check for EKS (AWS-managed infrastructure)")
 	return nil
 }

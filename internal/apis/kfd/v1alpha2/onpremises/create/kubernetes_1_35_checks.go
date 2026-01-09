@@ -10,6 +10,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	distrib "github.com/sighupio/furyctl/internal/distribution"
 	execx "github.com/sighupio/furyctl/internal/x/exec"
 )
 
@@ -240,4 +241,41 @@ func (p *PreFlight) checkNodeOSCompatibility() error {
 
 	logrus.Debug("node OS versions are compatible - OK")
 	return nil
+}
+
+// CheckModuleBreakingChanges validates module versions for Kubernetes 1.35 breaking changes
+func (p *PreFlight) CheckModuleBreakingChanges() error {
+	// Build module map from kfdManifest
+	modules := make(map[string]string)
+	if p.kfdManifest.Modules != nil {
+		if p.kfdManifest.Modules.Auth != "" {
+			modules["auth"] = p.kfdManifest.Modules.Auth
+		}
+		if p.kfdManifest.Modules.AWS != "" {
+			modules["aws"] = p.kfdManifest.Modules.AWS
+		}
+		if p.kfdManifest.Modules.DR != "" {
+			modules["dr"] = p.kfdManifest.Modules.DR
+		}
+		if p.kfdManifest.Modules.Ingress != "" {
+			modules["ingress"] = p.kfdManifest.Modules.Ingress
+		}
+		if p.kfdManifest.Modules.Logging != "" {
+			modules["logging"] = p.kfdManifest.Modules.Logging
+		}
+		if p.kfdManifest.Modules.Monitoring != "" {
+			modules["monitoring"] = p.kfdManifest.Modules.Monitoring
+		}
+		if p.kfdManifest.Modules.OPA != "" {
+			modules["opa"] = p.kfdManifest.Modules.OPA
+		}
+		if p.kfdManifest.Modules.Networking != "" {
+			modules["networking"] = p.kfdManifest.Modules.Networking
+		}
+		if p.kfdManifest.Modules.Tracing != "" {
+			modules["tracing"] = p.kfdManifest.Modules.Tracing
+		}
+	}
+
+	return distrib.CheckModuleCompatibility(p.kfdManifest.Kubernetes.OnPremises.Version, modules)
 }

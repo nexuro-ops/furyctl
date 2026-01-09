@@ -9,6 +9,8 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
+
+	distrib "github.com/sighupio/furyctl/internal/distribution"
 )
 
 // Kubernetes135ChecksError represents a collection of errors from 1.35 specific checks
@@ -179,4 +181,49 @@ func (p *PreFlight) checkNodeOSCompatibility() error {
 
 	logrus.Debug("node OS versions are compatible - OK")
 	return nil
+}
+
+// CheckModuleBreakingChanges validates module versions for Kubernetes 1.35 breaking changes
+func (p *PreFlight) CheckModuleBreakingChanges() error {
+	// Build module map from kfd manifest
+	modules := make(map[string]string)
+	if p.kfd.Modules != nil {
+		if p.kfd.Modules.Auth != "" {
+			modules["auth"] = p.kfd.Modules.Auth
+		}
+		if p.kfd.Modules.AWS != "" {
+			modules["aws"] = p.kfd.Modules.AWS
+		}
+		if p.kfd.Modules.DR != "" {
+			modules["dr"] = p.kfd.Modules.DR
+		}
+		if p.kfd.Modules.Ingress != "" {
+			modules["ingress"] = p.kfd.Modules.Ingress
+		}
+		if p.kfd.Modules.Logging != "" {
+			modules["logging"] = p.kfd.Modules.Logging
+		}
+		if p.kfd.Modules.Monitoring != "" {
+			modules["monitoring"] = p.kfd.Modules.Monitoring
+		}
+		if p.kfd.Modules.OPA != "" {
+			modules["opa"] = p.kfd.Modules.OPA
+		}
+		if p.kfd.Modules.Networking != "" {
+			modules["networking"] = p.kfd.Modules.Networking
+		}
+		if p.kfd.Modules.Tracing != "" {
+			modules["tracing"] = p.kfd.Modules.Tracing
+		}
+	}
+
+	// Get the Kubernetes version from the cluster if not specified
+	k8sVersion := "1.35.0" // Default to check for 1.35 breaking changes
+	if p.kfd.Kubernetes.OnPremises.Version != "" {
+		k8sVersion = p.kfd.Kubernetes.OnPremises.Version
+	} else if p.kfd.Kubernetes.EKS.Version != "" {
+		k8sVersion = p.kfd.Kubernetes.EKS.Version
+	}
+
+	return distrib.CheckModuleCompatibility(k8sVersion, modules)
 }

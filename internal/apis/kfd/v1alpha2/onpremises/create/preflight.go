@@ -16,6 +16,7 @@ import (
 	"github.com/sighupio/fury-distribution/pkg/apis/onpremises/v1alpha2/public"
 	"github.com/sighupio/furyctl/internal/apis/kfd/v1alpha2/onpremises/supported"
 	"github.com/sighupio/furyctl/internal/cluster"
+	distrib "github.com/sighupio/furyctl/internal/distribution"
 	"github.com/sighupio/furyctl/internal/state"
 	"github.com/sighupio/furyctl/internal/tool/ansible"
 	"github.com/sighupio/furyctl/internal/tool/kubectl"
@@ -173,6 +174,11 @@ func (p *PreFlight) Exec(renderedConfig map[string]any) (*Status, error) {
 		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.5" {
 		if err := p.CheckKubernetes135Compatibility(); err != nil {
 			return status, fmt.Errorf("kubernetes 1.35 compatibility check failed: %w", err)
+		}
+
+		logrus.Info("Checking for module breaking changes...")
+		if err := p.CheckModuleBreakingChanges(); err != nil {
+			return status, fmt.Errorf("module compatibility check failed: %w", err)
 		}
 	}
 

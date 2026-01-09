@@ -140,6 +140,11 @@ func (p *PreFlight) Exec(renderedConfig map[string]any) (*Status, error) {
 		// Log warnings but don't fail preflight (operation can proceed with warnings)
 	}
 
+	// Check for module breaking changes
+	if err := p.CheckModuleBreakingChanges(); err != nil {
+		logrus.WithError(err).Warn("Module compatibility checks reported issues")
+	}
+
 	storedCfg, err := p.stateStore.GetConfig()
 	if err != nil {
 		logrus.Debug("error while getting cluster state: ", err)
