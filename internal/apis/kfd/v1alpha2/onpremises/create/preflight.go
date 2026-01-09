@@ -164,6 +164,18 @@ func (p *PreFlight) Exec(renderedConfig map[string]any) (*Status, error) {
 		return status, fmt.Errorf("cluster is unreachable, make sure you have access to the cluster: %w", err)
 	}
 
+	// Check Kubernetes 1.35 specific requirements
+	if p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.0" ||
+		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.1" ||
+		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.2" ||
+		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.3" ||
+		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.4" ||
+		p.kfdManifest.Kubernetes.OnPremises.Version == "1.35.5" {
+		if err := p.CheckKubernetes135Compatibility(); err != nil {
+			return status, fmt.Errorf("kubernetes 1.35 compatibility check failed: %w", err)
+		}
+	}
+
 	diffChecker, err := p.CreateDiffChecker(renderedConfig)
 	if err != nil {
 		if !cluster.IsForceEnabledForFeature(p.force, cluster.ForceFeatureMigrations) {

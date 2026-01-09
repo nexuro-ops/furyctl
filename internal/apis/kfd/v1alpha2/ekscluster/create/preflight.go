@@ -210,6 +210,12 @@ func (p *PreFlight) Exec(renderedConfig map[string]any) (*Status, error) {
 		return status, fmt.Errorf("cluster is unreachable, make sure you have access to the cluster: %w", err)
 	}
 
+	// Check Kubernetes 1.35 specific requirements (cluster-level checks)
+	if err := p.CheckKubernetes135Compatibility(); err != nil {
+		logrus.WithError(err).Warn("Kubernetes 1.35 compatibility checks reported issues")
+		// Log warnings but don't fail preflight for EKS (AWS manages infrastructure)
+	}
+
 	storedCfg, err := p.stateStore.GetConfig()
 	if err != nil {
 		logrus.Debug("error while getting cluster state: ", err)
