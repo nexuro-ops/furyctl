@@ -1,0 +1,40 @@
+# Copyright (c) 2017-present SIGHUP s.r.l All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+# Test configuration for Kubernetes 1.35.0 KFDDistribution deployment
+apiVersion: kfd.sighup.io/v1alpha2
+kind: KFDDistribution
+metadata:
+  name: k8s-1.35-test-kfd
+spec:
+  distributionVersion: v1.35.0
+  distribution:
+    common:
+      releasesRepository: https://releases.fury.io/releases
+    kubeconfig: /tmp/kubeconfig
+  modules:
+    auth:
+      namespace: dex
+    logging:
+      namespace: logging
+    monitoring:
+      namespace: monitoring
+    networking:
+      namespace: tigera-operator
+    ingress:
+      namespace: ingress-nginx
+    dr:
+      namespace: velero
+    opa:
+      namespace: gatekeeper-system
+    tracing:
+      namespace: tracing
+    aws:
+      region: us-west-2
+
+# Global flags for testing
+flags:
+  global:
+    debug: false
+    dryRun: false

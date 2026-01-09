@@ -1,0 +1,49 @@
+# Copyright (c) 2017-present SIGHUP s.r.l All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+# Test configuration for Kubernetes 1.35.3 OnPremises cluster (mid-range version)
+apiVersion: kfd.sighup.io/v1alpha2
+kind: OnPremises
+metadata:
+  name: k8s-1.35.3-test-cluster
+spec:
+  distributionVersion: v1.35.3
+  hosts:
+    - name: master-1
+      ip: 192.168.1.10
+      roles:
+        - master
+      ssh:
+        user: ubuntu
+        keyPath: /root/.ssh/id_rsa
+    - name: master-2
+      ip: 192.168.1.11
+      roles:
+        - master
+      ssh:
+        user: ubuntu
+        keyPath: /root/.ssh/id_rsa
+    - name: worker-1
+      ip: 192.168.1.20
+      roles:
+        - worker
+      ssh:
+        user: ubuntu
+        keyPath: /root/.ssh/id_rsa
+  kubernetes:
+    apiServer:
+      certSans:
+        - api.fury.local
+    proxy:
+      http: ""
+      https: ""
+      noProxy: ""
+  addons:
+    velero: ~
+
+# Global flags for testing
+flags:
+  global:
+    debug: false
+    dryRun: false

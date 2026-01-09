@@ -1,0 +1,47 @@
+# Copyright (c) 2017-present SIGHUP s.r.l All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+# Test configuration for Kubernetes 1.35.0 EKS cluster
+apiVersion: kfd.sighup.io/v1alpha2
+kind: EKSCluster
+metadata:
+  name: k8s-1.35-test-eks
+spec:
+  distributionVersion: v1.35.0
+  region: us-west-2
+  tags:
+    environment: test
+    kubernetes-version: "1.35"
+  infrastructure:
+    vpc:
+      network:
+        cidr: 10.0.0.0/16
+        subnetsCidrs:
+          private:
+            - 10.0.1.0/24
+            - 10.0.2.0/24
+          public:
+            - 10.0.101.0/24
+            - 10.0.102.0/24
+    vpn:
+      instances: 0
+  kubernetes:
+    nodeAllowedSshPublicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA1xMG9TEH97YhkmoehlMaAMwqi9NOIx2ItXKNv2KVnI
+    apiServer:
+      privateAccess: true
+      publicAccess: true
+    nodePools:
+      - name: worker
+        type: eks-managed
+        size:
+          min: 1
+          max: 3
+        instance:
+          type: t3.medium
+
+# Global flags for testing
+flags:
+  global:
+    debug: false
+    dryRun: false
